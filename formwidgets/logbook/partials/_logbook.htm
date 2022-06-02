@@ -44,8 +44,8 @@
 
                                 <?= trans('jacob.logbook::lang.changes.column', [
                                     'column' => trans($currentModel->changeLogBookDisplayColumn($attribute->getColumn())),
-                                    'from' => $from,
-                                    'to' => $to
+                                    'from' => \Str::limit($from, 1000),
+                                    'to' => \Str::limit($to, 1000)
                                 ]) ?>
                                 <br/>
                             <?php endforeach ?>

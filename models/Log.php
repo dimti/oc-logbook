@@ -8,6 +8,7 @@ use Jacob\LogBook\Classes\Entities\Attribute;
 use Jacob\LogBook\Classes\Entities\Changes;
 use October\Rain\Database\Builder;
 use October\Rain\Database\Model;
+use October\Rain\Database\Traits\SoftDelete;
 
 /**
  * @property User $backendUser
@@ -15,6 +16,8 @@ use October\Rain\Database\Model;
  */
 class Log extends Model
 {
+    use SoftDelete;
+
     public $table = 'jacob_logbook_logs';
 
     public $belongsTo = [
@@ -54,6 +57,12 @@ class Log extends Model
     public function getMutation(): Changes
     {
         $changes = $this->getAttribute('changes');
+
+        if (!is_array($changes)) {
+            $this->delete();
+
+            return new Changes(Changes::TYPE_UPDATED, []);
+        }
 
         $attributes = $changes['changedAttributes'] !== null
             ? array_map(static function (array $attribute) {

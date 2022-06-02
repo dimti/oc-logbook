@@ -19,3 +19,6 @@
 2.1.1:
     - '* changes field convert to mediumtext in logs table'
     - migration_211.php
+2.1.2:
+    - '+ deleted_at into logs table'
+    - migration_212.php

@@ -12,6 +12,6 @@ return [
             'created' => 'created',
             'deleted' => 'deleted',
         ],
-        'column' => ':column changed from :from to :to'
+        'column' => '<p></p>:column changed <br>from: :from <br>to: :to'
     ],
 ];

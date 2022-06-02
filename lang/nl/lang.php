@@ -12,6 +12,6 @@ return [
             'created' => 'aangemaakt',
             'deleted' => 'verwijderd',
         ],
-        'column' => ':column is gewijzigd van :from naar :to'
+        'column' => '<p></p>:column is gewijzigd <br>van: :from<br> naar: :to'
     ],
 ];
