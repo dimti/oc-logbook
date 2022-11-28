@@ -37,6 +37,7 @@ class Log extends Model
 
     protected $jsonable = [
         'changes',
+        'diff_json',
     ];
 
     public function getId(): int
@@ -69,7 +70,8 @@ class Log extends Model
                 return new Attribute(
                     $attribute['column'] ?? '',
                     $attribute['old'] ?? null,
-                    $attribute['new'] ?? null
+                    $attribute['new'] ?? null,
+                    $attribute['diffJson'] ?? null
                 );
             }, $changes['changedAttributes'])
             : null;

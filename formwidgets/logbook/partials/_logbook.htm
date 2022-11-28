@@ -33,21 +33,38 @@
 
                         <?php if ($changes->isTypeUpdated()): ?>
                             : <br/>
-                            <?php foreach ($changes->getChangedAttributes() as $attribute): ?>
-                                <?php
+                            <?php foreach ($changes->getChangedAttributes() as $attribute):
+                                assert($attribute instanceof \Jacob\LogBook\Classes\Entities\Attribute);
+
+                                if ($attribute->hasDiffJson()) {
+                                    foreach ($attribute->getDiffJson() as $jsonAttributeKey => $diffJsonAttribute) {
+                                        $columnName = $jsonAttributeKey;
+
+                                        $from = $diffJsonAttribute['old'];
+                                        $to = $diffJsonAttribute['new'];
+
+                                        echo trans('jacob.logbook::lang.changes.column', [
+                                            'column' => $columnName,
+                                            'from' => \Str::limit($from, 1000),
+                                            'to' => \Str::limit($to, 1000)
+                                        ]);
+                                    }
+                                } else {
+                                    $columnName = trans($currentModel->changeLogBookDisplayColumn($attribute->getColumn()));
+
                                     $from = $currentModel->changeLogBookDisplayValue($attribute->getColumn(), $attribute->getOld()) ?? '-';
                                     $from = $from instanceof Illuminate\Contracts\Support\Htmlable ? $from->toHtml() : e($from);
 
                                     $to = $currentModel->changeLogBookDisplayValue($attribute->getColumn(), $attribute->getNew()) ?? '-';
                                     $to = $from instanceof Illuminate\Contracts\Support\Htmlable ? $to->toHtml() : e($to);
-                                ?>
 
-                                <?= trans('jacob.logbook::lang.changes.column', [
-                                    'column' => trans($currentModel->changeLogBookDisplayColumn($attribute->getColumn())),
-                                    'from' => \Str::limit($from, 1000),
-                                    'to' => \Str::limit($to, 1000)
-                                ]) ?>
-                                <br/>
+                                    echo trans('jacob.logbook::lang.changes.column', [
+                                        'column' => $columnName,
+                                        'from' => \Str::limit($from, 1000),
+                                        'to' => \Str::limit($to, 1000)
+                                    ]);
+                                }
+                                ?><br/>
                             <?php endforeach ?>
                         <?php endif; ?>
                     </td>

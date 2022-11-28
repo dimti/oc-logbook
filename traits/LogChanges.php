@@ -168,7 +168,24 @@ trait LogChanges
                 continue; //ignore field
             }
 
-            $attributes[] = new Attribute($column,$originalAttributes[$column] ?? null, $newValue);
+            $diffJsonableValues = [];
+
+            if (in_array($column, $this->jsonable)) {
+                $oldValueDecoded = json_decode($originalAttributes[$column]);
+
+                $newValueDecoded = json_decode($newValue);
+
+                foreach ($newValueDecoded as $key => $value) {
+                    if (!isset($oldValueDecoded->$key) || $oldValueDecoded->$key != $value) {
+                        $diffJsonableValues[$key] = [
+                            'old' => $oldValueDecoded->$key,
+                            'new' => $value,
+                        ];
+                    }
+                }
+            }
+
+            $attributes[] = new Attribute($column,$originalAttributes[$column] ?? null, $newValue, $diffJsonableValues);
         }
 
         if (count($attributes) === 0) {

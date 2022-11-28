@@ -17,6 +17,8 @@ abstract class BaseEntity
                 foreach ($value as $val) {
                     if ($val instanceof BaseEntity) {
                         $items[] = $val->getData();
+                    } else {
+                        $items = $value;
                     }
                 }
 
