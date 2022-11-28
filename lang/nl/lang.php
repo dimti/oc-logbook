@@ -5,13 +5,18 @@ return [
     'date' => 'Datum',
     'undo' => 'Ongedaan maken',
     'changes' => [
-        'user' => ':user heeft :model :type ',
-        'unknown' => ':model is :type',
+        'user' => ':user heeft <b>:model</b> :type ',
+        'unknown' => '<b>:model</b> is :type',
         'type' => [
             'updated' => 'gewijzigd',
             'created' => 'aangemaakt',
             'deleted' => 'verwijderd',
         ],
-        'column' => '<p></p>:column is gewijzigd <br>van: :from<br> naar: :to'
+        'unknownType' => [
+            'updated' => 'gewijzigd',
+            'created' => 'aangemaakt',
+            'deleted' => 'verwijderd',
+        ],
+        'column' => '<b>:column</b>: :from ➔ <b>:to</b><br>',
     ],
 ];

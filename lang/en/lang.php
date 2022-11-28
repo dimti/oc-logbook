@@ -5,13 +5,18 @@ return [
     'date' => 'Date',
     'undo' => 'Undo',
     'changes' => [
-        'user' => ':user has :type :model',
-        'unknown' => ':model is :type',
+        'user' => ':user has :type <b>:model</b>',
+        'unknown' => '<b>:model</b> is :type',
         'type' => [
             'updated' => 'updated',
             'created' => 'created',
             'deleted' => 'deleted',
         ],
-        'column' => '<p></p>:column changed <br>from: :from <br>to: :to'
+        'unknownType' => [
+            'updated' => 'updated',
+            'created' => 'created',
+            'deleted' => 'deleted',
+        ],
+        'column' => '<b>:column</b>: :from ➔ <b>:to</b><br>',
     ],
 ];

@@ -5,13 +5,18 @@ return [
     'date' => 'Дата',
     'undo' => 'Восстановить',
     'changes' => [
-        'user' => ':user :type :model',
-        'unknown' => ':model :type',
+        'user' => ':user :type <b>:model</b>',
+        'unknown' => '<b>:model</b> :type',
         'type' => [
             'updated' => 'обновил',
             'created' => 'добавил',
             'deleted' => 'удалил',
         ],
-        'column' => '<p></p>:column изменено <br>с: :from <br>на: :to'
+        'unknownType' => [
+            'updated' => 'обновлена',
+            'created' => 'добавлена',
+            'deleted' => 'удалена',
+        ],
+        'column' => '<b>:column</b>: :from ➔ <b>:to</b><br>',
     ],
 ];

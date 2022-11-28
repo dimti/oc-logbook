@@ -19,16 +19,16 @@
                     <?php $modelName = trans($currentModel->logBookModelName ?? substr(strrchr(get_class($currentModel), "\\"), 1)); ?>
                     <td>
                         <?php if ($log->backendUser): ?>
-                            <?= e(trans('jacob.logbook::lang.changes.user', [
+                            <?= trans('jacob.logbook::lang.changes.user', [
                                 'user' => ucfirst($log->backendUser->login),
                                 'type' => trans('jacob.logbook::lang.changes.type.' . $changes->getType()),
                                 'model' => $modelName
-                            ])) ?>
+                            ]) ?>
                         <?php else: ?>
-                            <?= e(trans('jacob.logbook::lang.changes.unknown', [
-                                'type' => trans('jacob.logbook::lang.changes.type.' . $changes->getType()),
+                            <?= trans('jacob.logbook::lang.changes.unknown', [
+                                'type' => trans('jacob.logbook::lang.changes.unknownType.' . $changes->getType()),
                                 'model' => $modelName
-                            ])) ?>
+                            ]) ?>
                         <?php endif; ?>
 
                         <?php if ($changes->isTypeUpdated()): ?>
@@ -36,22 +36,22 @@
                             <?php foreach ($changes->getChangedAttributes() as $attribute):
                                 assert($attribute instanceof \Jacob\LogBook\Classes\Entities\Attribute);
 
-                                if ($attribute->hasDiffJson()) {
-                                    foreach ($attribute->getDiffJson() as $jsonAttributeKey => $diffJsonAttribute) {
-                                        $columnName = $jsonAttributeKey;
+                                $columnName = trans($currentModel->changeLogBookDisplayColumn($attribute->getColumn()));
 
+                                if ($attribute->hasDiffJson()) {
+                                    echo sprintf('<i>%s</i><br>', $columnName);
+
+                                    foreach ($attribute->getDiffJson() as $jsonAttributeKey => $diffJsonAttribute) {
                                         $from = $diffJsonAttribute['old'];
                                         $to = $diffJsonAttribute['new'];
 
                                         echo trans('jacob.logbook::lang.changes.column', [
-                                            'column' => $columnName,
+                                            'column' => $jsonAttributeKey,
                                             'from' => \Str::limit($from, 1000),
                                             'to' => \Str::limit($to, 1000)
                                         ]);
                                     }
                                 } else {
-                                    $columnName = trans($currentModel->changeLogBookDisplayColumn($attribute->getColumn()));
-
                                     $from = $currentModel->changeLogBookDisplayValue($attribute->getColumn(), $attribute->getOld()) ?? '-';
                                     $from = $from instanceof Illuminate\Contracts\Support\Htmlable ? $from->toHtml() : e($from);
 
