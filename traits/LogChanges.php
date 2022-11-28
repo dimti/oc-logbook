@@ -1,17 +1,17 @@
-<?php
-
-namespace Jacob\Logbook\Traits;
+<?php namespace Jacob\Logbook\Traits;
 
 use Backend\Classes\AuthManager;
 use Backend\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Jacob\LogBook\Classes\LoadRelation;
 use Jacob\Logbook\Models\Log;
 use Jacob\LogBook\Classes\Entities\Attribute;
 use Jacob\LogBook\Classes\Entities\Changes;
 use October\Rain\Database\Builder;
 use October\Rain\Database\Model;
+use Config;
 
 trait LogChanges
 {
@@ -117,6 +117,35 @@ trait LogChanges
             'changes' => $changes->getData(),
             'backend_user_id' => $backendUserId,
         ]);
+
+        $this->processRetention();
+    }
+
+    private function processRetention()
+    {
+        if (Config::get('jacob.logbook::prune')) {
+            if (Config::get('jacob.logbook::retention.max_records') > 0) {
+                $latestOfMaxRecordsId = Log::whereModel(get_class($this))->whereModelKey($this->getKey())
+                    ->withoutGlobalScope(SoftDeletingScope::class)
+                    ->orderBy('id', 'desc')
+                    ->limit(Config::get('jacob.logbook::retention.max_records'))
+                    ->select(['id'])
+                    ->get()->last()->id;
+
+                Log::whereModel(get_class($this))->whereModelKey($this->getKey())
+                    ->withoutGlobalScope(SoftDeletingScope::class)
+                    ->orderBy('id', 'desc')
+                    ->where('id', '<', $latestOfMaxRecordsId)
+                    ->forceDelete();
+            }
+
+            if (Config::get('jacob.logbook::retention.max_records') > 0) {
+                Log::whereModel(get_class($this))->whereModelKey($this->getKey())
+                    ->withoutGlobalScope(SoftDeletingScope::class)
+                    ->where('created_at', '<', date('Y-m-d', time() - 30 * 3600 * 24))
+                    ->forceDelete();
+            }
+        }
     }
 
     public function logChangesAfterCreate(): void
