@@ -164,8 +164,8 @@ trait LogChanges
         $ignoreFieldsLogbook = $this->ignoreFieldsLogbook ?? ['updated_at'];
 
         foreach ($this->getDirty() as $column => $newValue) {
-            if (in_array($column, $ignoreFieldsLogbook)) {
-                continue; //ignore field
+            if (in_array($column, $ignoreFieldsLogbook) || (in_array($column, $this->jsonable) && !$originalAttributes[$column])) {
+                continue; //ignore field if presented appropriate list or ignore if jsonable field without old value
             }
 
             $diffJsonableValues = [];
@@ -178,7 +178,7 @@ trait LogChanges
                 foreach ($newValueDecoded as $key => $value) {
                     if (!isset($oldValueDecoded->$key) || $oldValueDecoded->$key != $value) {
                         $diffJsonableValues[$key] = [
-                            'old' => $oldValueDecoded->$key,
+                            'old' => $oldValueDecoded->$key ?? null,
                             'new' => $value,
                         ];
                     }

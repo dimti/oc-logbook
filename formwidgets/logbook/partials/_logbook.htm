@@ -17,7 +17,7 @@
                     <?php $currentModelClass = $log->getModel() ?>
                     <?php $currentModel = new $currentModelClass; ?>
                     <?php $modelName = trans($currentModel->logBookModelName ?? substr(strrchr(get_class($currentModel), "\\"), 1)); ?>
-                    <td>
+                    <td style="word-break: break-all">
                         <?php if ($log->backendUser): ?>
                             <?= trans('jacob.logbook::lang.changes.user', [
                                 'user' => ucfirst($log->backendUser->login),
@@ -44,6 +44,14 @@
                                     foreach ($attribute->getDiffJson() as $jsonAttributeKey => $diffJsonAttribute) {
                                         $from = $diffJsonAttribute['old'];
                                         $to = $diffJsonAttribute['new'];
+
+                                        if (is_array($from)) {
+                                            $from = json_encode($from);
+                                        }
+
+                                        if (is_array($to)) {
+                                            $to = json_encode($to);
+                                        }
 
                                         echo trans('jacob.logbook::lang.changes.column', [
                                             'column' => $jsonAttributeKey,
